@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NovaMind AI Text-to-Speech Converter</title>
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 30px;
+            padding: 20px;
+            position: relative;
+        }
+
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.3);
+        }
+
+        .config-section {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .config-section h3 {
+            color: #856404;
+            margin-bottom: 10px;
+            font-size: 1.2em;
+        }
+
+        .config-section code {
+            background: #fff;
+            padding: 10px;
+            display: block;
+            border-radius: 5px;
+            font-family: 'Courier New', monospace;
+            color: #d63384;
+            word-break: break-all;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+            font-size: 1.1em;
+        }
+
+        select, input[type="text"] {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        select:focus, input[type="text"]:focus {
+            outline: none;
+            border-color: #FF9900;
+            box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.1);
+        }
+
+        textarea {
+            width: 100%;
+            height: 150px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #FF9900;
+            box-shadow: 0 0 0 3px rgba(255, 153, 0, 0.1);
+        }
+
+        .buttons {
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            color: #ffffff;
+            padding: 12px 30px;
+            background: linear-gradient(135deg, #FF9900 0%, #ff7700 100%);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 153, 0, 0.3);
+        }
+
+        .buttons:hover {
+            background: linear-gradient(135deg, #ffc477 0%, #ffaa44 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 153, 0, 0.4);
+        }
+
+        .buttons:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 10px rgba(255, 153, 0, 0.3);
+        }
+
+        #charCounter {
+            float: right;
+            color: #666;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        #postIDreturned {
+            display: inline-block;
+            margin-left: 15px;
+            padding: 8px 15px;
+            background: #d4edda;
+            color: #155724;
+            border-radius: 5px;
+            font-weight: 600;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .search-section {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-section label {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .search-section input[type="text"] {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th {
+            background: linear-gradient(135deg, #FF9900 0%, #ff7700 100%);
+            color: white;
+            padding: 15px 10px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table td {
+            padding: 15px 10px;
+            border-bottom: 1px solid #e0e0e0;
+            color: #333;
+            font-size: 14px;
+        }
+
+        table tr:hover {
+            background-color: #f8f9fa;
+        }
+
+        audio {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8em;
+            }
+
+            .card {
+                padding: 20px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .buttons {
+                width: 100%;
+            }
+
+            table {
+                font-size: 12px;
+            }
+
+            table th, table td {
+                padding: 10px 5px;
+            }
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #fff;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="mylogoo.png" alt="NovaMind AI Logo" class="logo" style="position:absolute;top:10px;left:10px;max-width:140px;height:auto;background:white;padding:8px;border-radius:10px;box-shadow:0 4px 15px rgba(0,0,0,0.2);">
+            <h1>🎙️ NovaMind AI Text-to-Speech Converter</h1>
+            <p>Convert your text to natural-sounding speech in multiple languages</p>
+            <p style="margin-top:10px;font-size:0.95em;opacity:0.92;">
+                Created by <strong>Aamir</strong> &nbsp;|&nbsp;
+                <a href="https://www.linkedin.com/in/aamir-imran" target="_blank" rel="noopener noreferrer"
+                   style="color:#fff;text-decoration:underline;font-weight:600;">
+                    linkedin.com/in/aamir-imran
+                </a>
+            </p>
+        </div>
+
+        <!-- Configuration Section -->
+        <div class="card">
+            <div class="config-section">
+                <h3>⚙️ API Configuration</h3>
+                <div class="form-group">
+                    <label for="apiEndpoint">ENDPOINT:</label>
+                    <input type="text" id="apiEndpoint" value="" placeholder="https://r9wqe87zei.execute-api.us-east-1.amazonaws.com/prodd/">
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Form -->
+        <div class="card">
+            <h2 style="margin-bottom: 20px; color: #333;">Create New Speech</h2>
+            
+            <div class="form-group">
+                <label for="voiceSelected">Select Voice:</label>
+                <select id="voiceSelected">
+                    <option value="Joanna">Joanna [English]</option>
+                    <option value="Maja">Maja [Polish]</option>
+                    <option value="Enrique">Enrique [Spanish]</option>
+                    <option value="Marlene">Marlene [German]</option>
+                    <option value="Mathieu">Mathieu [French]</option>
+                    <option value="Cristiano">Cristiano [Portuguese]</option>
+                    <option value="Liv">Liv [Norwegian]</option>
+                    <option value="Mizuki">Mizuki [Japanese]</option>
+                    <option value="Carla">Carla [Italian]</option>
+                    <option value="Carmen">Carmen [Romanian]</option>
+                    <option value="Tatyana">Tatyana [Russian]</option>
+                    <option value="Astrid">Astrid [Swedish]</option>
+                    <option value="Filiz">Filiz [Turkish]</option>
+                    <option value="Gwyneth">Gwyneth [Welsh]</option>
+                    <option value="Karl">Karl [Icelandic]</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="postText">Enter Text:</label>
+                <textarea id="postText" placeholder="Type or paste your text here..."></textarea>
+                <span id="charCounter">Characters: 0</span>
+            </div>
+
+            <div class="button-group">
+                <button id="sayButton" class="buttons">🔊 Say it!</button>
+                <span id="postIDreturned"></span>
+            </div>
+        </div>
+
+        <!-- Search Section -->
+        <div class="card">
+            <h2 style="margin-bottom: 20px; color: #333;">Search Posts</h2>
+            
+            <div class="search-section">
+                <label for="postId">Post ID:</label>
+                <input type="text" id="postId" placeholder="Enter post ID to retrieve">
+                <button id="searchButton" class="buttons">🔍 Search</button>
+            </div>
+
+            <table id="posts">
+                <colgroup>
+                    <col style="width:10%">
+                    <col style="width:7%">
+                    <col style="width:45%">
+                    <col style="width:8%">
+                    <col style="width:30%">
+                </colgroup>
+                <thead>
+                    <tr>
+                        <th>Post ID</th>
+                        <th>Voice</th>
+                        <th>Post</th>
+                        <th>Status</th>
+                        <th>Player</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- jQuery Library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    
+    <!-- Main Application Script -->
+    <script>
+        // ============================================
+        // API CONFIGURATION SECTION
+        // ============================================
+        // Get API endpoint from input field
+        function getApiEndpoint() {
+            return document.getElementById('apiEndpoint').value;
+        }
+        // ============================================
+
+        // Say Button Click Handler
+        document.getElementById("sayButton").onclick = function(){
+            var inputData = {
+                "voice": $('#voiceSelected option:selected').val(),
+                "text" : $('#postText').val()
+            };
+
+            // Validate input
+            if (!inputData.text.trim()) {
+                alert("Please enter some text to convert to speech.");
+                return;
+            }
+
+            $.ajax({
+                url: getApiEndpoint(),
+                type: 'POST',
+                data: JSON.stringify(inputData),
+                contentType: 'application/json; charset=utf-8',
+                success: function (response) {
+                    document.getElementById("postIDreturned").textContent = "Post ID: " + response;
+                    document.getElementById("postIDreturned").style.display = "inline-block";
+                },
+                error: function (xhr, status, error) {
+                    alert("Error: Unable to process your request. Please check the API endpoint configuration.");
+                    console.error("Error details:", error);
+                }
+            });
+        }
+
+        // Search Button Click Handler
+        document.getElementById("searchButton").onclick = function(){
+            var postId = $('#postId').val();
+
+            // Validate input
+            if (!postId.trim()) {
+                alert("Please enter a Post ID to search.");
+                return;
+            }
+
+            $.ajax({
+                url: getApiEndpoint() + '?postId=' + postId,
+                type: 'GET',
+                success: function (response) {
+                    // Clear existing rows except header
+                    $('#posts tbody tr').remove();
+
+                    // Check if response is empty
+                    if (!response || response.length === 0) {
+                        $('#posts tbody').append("<tr><td colspan='5' style='text-align:center; padding:20px; color:#999;'>No results found for this Post ID.</td></tr>");
+                        return;
+                    }
+
+                    // Add new rows
+                    jQuery.each(response, function(i, data) {
+                        var player = "<audio controls><source src='" + data['url'] + "' type='audio/mpeg'></audio>";
+
+                        if (typeof data['url'] === "undefined" || !data['url']) {
+                            player = "<span style='color:#999;'>Processing...</span>";
+                        }
+
+                        $("#posts tbody").append("<tr> \
+                            <td>" + data['id'] + "</td> \
+                            <td>" + data['voice'] + "</td> \
+                            <td>" + data['text'] + "</td> \
+                            <td>" + data['status'] + "</td> \
+                            <td>" + player + "</td> \
+                        </tr>");
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert("Error: Unable to retrieve post. Please check the API endpoint configuration.");
+                    console.error("Error details:", error);
+                }
+            });
+        }
+
+        // Character Counter
+        document.getElementById("postText").onkeyup = function(){
+            var length = $('#postText').val().length;
+            document.getElementById("charCounter").textContent = "Characters: " + length;
+        }
+
+        // Hide post ID initially
+        document.getElementById("postIDreturned").style.display = "none";
+    </script>
+</body>
+</html>
+

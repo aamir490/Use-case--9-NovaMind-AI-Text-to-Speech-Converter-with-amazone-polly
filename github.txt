@@ -1,0 +1,383 @@
+================================================================
+  GITHUB COMMANDS REFERENCE
+  Project: NovaMind AI Text-to-Speech Converter with Amazon Polly
+  Author:  Aamir
+  Repo:    https://github.com/aamir490/Use-case--9-NovaMind-AI-Text-to-Speech-Converter-with-amazone-polly
+================================================================
+
+
+----------------------------------------------------------------
+  SECTION 1 — FIRST-TIME SETUP (Run once on your machine)
+----------------------------------------------------------------
+
+# Set your global Git identity (only needed once per machine)
+git config --global user.name "Aamir"
+git config --global user.email "your-email@example.com"
+
+# Verify your config
+git config --list
+
+
+----------------------------------------------------------------
+  SECTION 2 — INITIALIZE LOCAL REPOSITORY
+----------------------------------------------------------------
+
+# Navigate to the project folder
+cd e:\GenAi-Project-Cloudage\PollyGenAI\PollyGenAI
+
+# Initialize a new Git repository
+git init
+
+# Verify it was initialized
+git status
+
+
+----------------------------------------------------------------
+  SECTION 3 — ADD REMOTE ORIGIN
+----------------------------------------------------------------
+
+# Add the remote repository (your GitHub repo URL)
+git remote add origin https://github.com/aamir490/Use-case--9-NovaMind-AI-Text-to-Speech-Converter-with-amazone-polly.git
+
+# ✅ Expected output: (no output = success)
+
+
+----------------------------------------------------------------
+  SECTION 4 — CHECK / VERIFY REMOTE
+----------------------------------------------------------------
+
+# List all remotes (shows name and URL)
+git remote -v
+
+# ✅ Expected output:
+# origin  https://github.com/aamir490/Use-case--9-NovaMind-AI-Text-to-Speech-Converter-with-amazone-polly.git (fetch)
+# origin  https://github.com/aamir490/Use-case--9-NovaMind-AI-Text-to-Speech-Converter-with-amazone-polly.git (push)
+
+# Show detailed info about the remote
+git remote show origin
+
+
+----------------------------------------------------------------
+  SECTION 5 — REMOVE REMOTE
+----------------------------------------------------------------
+
+# Remove the remote named "origin"
+git remote remove origin
+
+# Verify it was removed (should return nothing)
+git remote -v
+
+# ⚠️  This only removes the remote link from your local config.
+#     It does NOT delete anything on GitHub.
+
+# Re-add it again after removing (if needed)
+git remote add origin https://github.com/aamir490/Use-case--9-NovaMind-AI-Text-to-Speech-Converter-with-amazone-polly.git
+
+
+----------------------------------------------------------------
+  SECTION 6 — RENAME REMOTE (optional)
+----------------------------------------------------------------
+
+# Rename remote from "origin" to another name
+git remote rename origin upstream
+
+# Rename it back to origin
+git remote rename upstream origin
+
+
+----------------------------------------------------------------
+  SECTION 7 — STAGE FILES
+----------------------------------------------------------------
+
+# Stage ALL files in the project
+git add .
+
+# Stage a specific file
+git add README.md
+git add interview.md
+git add github.txt
+git add steps_to_do.md
+
+# Stage all .py files
+git add *.py
+
+# Stage a specific folder
+git add Load_On_S3_or_ELB/
+git add ConvertToAudio/
+git add PostReader_NewPost/
+git add get_audio_post/
+
+# Check what is staged and what is not
+git status
+
+# See exact changes staged for commit
+git diff --staged
+
+
+----------------------------------------------------------------
+  SECTION 8 — COMMIT
+----------------------------------------------------------------
+
+# Commit with a message
+git commit -m "Initial commit: NovaMind AI Text-to-Speech Converter"
+
+# Commit with a detailed message (opens default editor)
+git commit
+
+# Common commit messages for this project:
+git commit -m "Add Lambda functions: NewPost, ConvertToAudio, GetPost"
+git commit -m "Add index.html frontend with NovaMind AI branding"
+git commit -m "Add README.md with architecture and deployment guide"
+git commit -m "Add interview.md with detailed project explanation"
+git commit -m "Add steps_to_do.md with full AWS deployment steps"
+git commit -m "Add API Gateway swagger export"
+git commit -m "Update branding: NovaMind AI logo and creator info"
+git commit -m "Fix DynamoDB table name env var typo"
+
+
+----------------------------------------------------------------
+  SECTION 9 — PUSH TO GITHUB
+----------------------------------------------------------------
+
+# Push to GitHub for the first time (sets upstream tracking)
+git push -u origin main
+
+# Push on subsequent commits
+git push
+
+# Push to a specific branch
+git push origin main
+git push origin dev
+
+# Force push (⚠️ use with caution — overwrites remote history)
+git push --force origin main
+
+# Push and set upstream in one command
+git push --set-upstream origin main
+
+
+----------------------------------------------------------------
+  SECTION 10 — BRANCH MANAGEMENT
+----------------------------------------------------------------
+
+# List all local branches
+git branch
+
+# List all branches including remote
+git branch -a
+
+# Create a new branch
+git branch dev
+git branch feature/add-cloudfront
+
+# Switch to a branch
+git checkout dev
+git checkout main
+
+# Create and switch in one command
+git checkout -b feature/add-authentication
+
+# Push a new branch to GitHub
+git push -u origin feature/add-authentication
+
+# Delete a local branch
+git branch -d dev
+
+# Delete a remote branch on GitHub
+git push origin --delete dev
+
+
+----------------------------------------------------------------
+  SECTION 11 — PULL FROM GITHUB
+----------------------------------------------------------------
+
+# Fetch and merge latest changes from remote
+git pull origin main
+
+# Pull with rebase (cleaner history)
+git pull --rebase origin main
+
+# Fetch without merging (safe — just downloads)
+git fetch origin
+
+
+----------------------------------------------------------------
+  SECTION 12 — VIEW HISTORY & LOGS
+----------------------------------------------------------------
+
+# Show full commit history
+git log
+
+# Show compact one-line log
+git log --oneline
+
+# Show graphical branch log
+git log --oneline --graph --all
+
+# Show last 5 commits
+git log -5
+
+# Show changes in a specific commit
+git show <commit-hash>
+
+
+----------------------------------------------------------------
+  SECTION 13 — UNDO / RESET
+----------------------------------------------------------------
+
+# Unstage a file (keep changes in working directory)
+git restore --staged README.md
+
+# Discard changes in a file (⚠️ permanent)
+git restore README.md
+
+# Undo the last commit but keep changes staged
+git reset --soft HEAD~1
+
+# Undo the last commit and unstage changes
+git reset --mixed HEAD~1
+
+# ⚠️ Hard reset — undo commit AND discard all changes
+git reset --hard HEAD~1
+
+# Revert a specific commit (safe — creates a new undo commit)
+git revert <commit-hash>
+
+
+----------------------------------------------------------------
+  SECTION 14 — .gitignore RECOMMENDED FOR THIS PROJECT
+----------------------------------------------------------------
+
+# Create a .gitignore file with these entries:
+# (prevents committing sensitive or unnecessary files)
+
+__pycache__/
+*.pyc
+*.pyo
+.env
+.DS_Store
+*.zip
+*.log
+node_modules/
+.aws/
+*.tmp
+
+
+----------------------------------------------------------------
+  SECTION 15 — FULL WORKFLOW: FIRST PUSH TO GITHUB
+----------------------------------------------------------------
+
+# Step 1: Navigate to project folder
+cd e:\GenAi-Project-Cloudage\PollyGenAI\PollyGenAI
+
+# Step 2: Initialize git
+git init
+
+# Step 3: Add remote
+git remote add origin https://github.com/aamir490/Use-case--9-NovaMind-AI-Text-to-Speech-Converter-with-amazone-polly.git
+
+# Step 4: Verify remote
+git remote -v
+
+# Step 5: Stage all files
+git add .
+
+# Step 6: Check what will be committed
+git status
+
+# Step 7: Commit
+git commit -m "Initial commit: NovaMind AI Text-to-Speech Converter with Amazon Polly"
+
+# Step 8: Push to GitHub
+git push -u origin main
+
+# Step 9: Verify on GitHub
+# Open: https://github.com/aamir490/Use-case--9-NovaMind-AI-Text-to-Speech-Converter-with-amazone-polly
+
+
+----------------------------------------------------------------
+  SECTION 16 — FULL WORKFLOW: SUBSEQUENT UPDATES
+----------------------------------------------------------------
+
+# Step 1: Make your code changes
+
+# Step 2: Check what changed
+git status
+git diff
+
+# Step 3: Stage changes
+git add .
+
+# Step 4: Commit
+git commit -m "Describe what you changed"
+
+# Step 5: Push
+git push
+
+
+----------------------------------------------------------------
+  SECTION 17 — CLONE THE REPO (on another machine)
+----------------------------------------------------------------
+
+# Clone the repository to your local machine
+git clone https://github.com/aamir490/Use-case--9-NovaMind-AI-Text-to-Speech-Converter-with-amazone-polly.git
+
+# Clone into a specific folder name
+git clone https://github.com/aamir490/Use-case--9-NovaMind-AI-Text-to-Speech-Converter-with-amazone-polly.git NovaMindAI
+
+
+----------------------------------------------------------------
+  SECTION 18 — USEFUL SHORTCUTS
+----------------------------------------------------------------
+
+# Stage all + commit in one command
+git commit -am "Your message"
+# ⚠️ Only works for modified tracked files — does NOT stage new files
+
+# Show remote URL
+git remote get-url origin
+
+# Change remote URL (if you rename the repo on GitHub)
+git remote set-url origin https://github.com/aamir490/NEW-REPO-NAME.git
+
+# Check current branch
+git branch --show-current
+
+# Stash uncommitted changes temporarily
+git stash
+
+# Bring stashed changes back
+git stash pop
+
+# List all stashes
+git stash list
+
+
+================================================================
+  QUICK REFERENCE CARD
+================================================================
+
+  git init                          Initialize local repo
+  git remote add origin <url>       Add remote
+  git remote -v                     Check remote
+  git remote remove origin          Remove remote
+  git remote set-url origin <url>   Change remote URL
+  git add .                         Stage all files
+  git add <file>                    Stage specific file
+  git status                        Check staged/unstaged
+  git commit -m "message"           Commit with message
+  git push -u origin main           First push (sets tracking)
+  git push                          Push (after first push)
+  git pull                          Pull latest from remote
+  git log --oneline                 View commit history
+  git branch                        List branches
+  git checkout -b <branch>          Create + switch branch
+  git clone <url>                   Clone a repository
+
+================================================================
+  REPO URL
+  https://github.com/aamir490/Use-case--9-NovaMind-AI-Text-to-Speech-Converter-with-amazone-polly.git
+
+  AUTHOR: Aamir
+  PROFILE: https://www.linkedin.com/in/aamir-imran
+================================================================
