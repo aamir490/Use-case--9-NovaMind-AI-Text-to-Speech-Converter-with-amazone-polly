@@ -138,9 +138,10 @@ git commit -m "Fix DynamoDB table name env var typo"
 ----------------------------------------------------------------
   SECTION 9 — PUSH TO GITHUB
 ----------------------------------------------------------------
+git branch
 
 # Push to GitHub for the first time (sets upstream tracking)
-git push -u origin main
+git push -u origin master
 
 # Push on subsequent commits
 git push
