@@ -6,6 +6,63 @@
 
 ---
 
+## 🏗️ Architecture Diagram
+
+![NovaMind AI Architecture](project-pic/architecture.jpg)
+
+---
+
+## 🚀 Project Overview
+
+**NovaMind AI** is a production-ready, production-grade Serverless Generative AI Text-to-Speech (TTS) Web Application. It leverages Amazon Web Services (AWS) managed services to convert user-submitted text into highly natural, human-like audio files in real time.
+
+Because the backend is entirely serverless, it requires zero server management, automatically scales from zero to millions of requests, and charges strictly on a pay-per-use basis.
+
+---
+
+## 🛠️ Core Technology Stack
+
+- **Frontend:** HTML5, CSS3, and JavaScript hosted as a static site on Amazon S3
+- **API Management:** Amazon API Gateway handles incoming HTTP REST API requests with CORS enabled
+- **Compute:** AWS Lambda executes the microservice backend business logic asynchronously
+- **Database:** Amazon DynamoDB serves as a fast, NoSQL key-value store to track text post states and storage URLs
+- **Event Orchestration:** Amazon SNS manages the decoupled asynchronous execution flow
+- **Generative AI Engine:** Amazon Polly powers the high-fidelity neural text-to-speech synthesis
+- **Storage:** Amazon S3 Buckets securely save the final generated audio outputs (`.mp3` format)
+- **Security & Monitoring:** AWS IAM handles strict fine-grained execution roles, while Amazon CloudWatch acts as the central hub for logging, error tracking, and metrics
+
+---
+
+## 🔄 Step-by-Step Architecture Flow
+
+The system operates using two distinct operational paths: the **Write Path** (Audio Creation) and the **Read Path** (Audio Retrieval).
+
+### 1. The Frontend Dashboard
+A user visits the NovaMind AI website. Through the user interface, they enter custom text, pick a specific target neural voice profile (e.g., standard vs. neural conversational, gender, language accent), and hit **"Generate Audio"**.
+
+### 2. The Create Audio Path — Asynchronous Write Pipeline
+
+- **API Submission:** The browser sends a `POST /` request containing the text payload to the PostReaderAPI (API Gateway)
+- **Request Intake (PostReader_NewPost):** A lightweight Lambda function generates a unique UUID for the post, initializes a status record tracking it as `PROCESSING`, and saves this metadata to the DynamoDB `posts` table
+- **Event Broadcast:** Before finishing, the Lambda function publishes the new post event to an Amazon SNS Topic. This decouples the client response from the heavy-lifting audio compilation, immediately freeing the API to accept new traffic
+- **Audio Synthesis (ConvertToAudio):** Triggered by the SNS topic, a second worker Lambda function reads the full text entry. If the text is long, it breaks it into smaller chunks, passes it to the Amazon Polly API, receives raw high-quality MP3 streams back, assembles them, and writes the output file directly to the Amazon S3 Audio Bucket
+- **State Update:** Once the audio upload is successful, it hits DynamoDB a second time to switch the post state to `UPDATED` and attach the public S3 object URL
+
+### 3. The Retrieve Audio Path — Synchronous Read Pipeline
+
+- While the write path runs in the background, the client dashboard fires a `GET /?postId=` request to the API Gateway
+- The `PostReader_GetPost` Lambda checks the status of that specific `id` in DynamoDB
+- If the status is still `PROCESSING`, it tells the UI to show a loader. Once it changes to `UPDATED`, it returns the final MP3 URL
+- The browser's native media player then streams the audio file directly from S3
+
+---
+
+## 🧠 Why This Qualifies as Generative AI
+
+Instead of relying on rigid, pre-recorded audio files or robotic phoneme splicing, the heart of this application — **Amazon Polly** — utilizes deep learning models to synthesize human-like speech. It dynamically generates entirely new audio content from raw textual sequences, adjusting for contextual nuances, punctuation pacing, accents, and inflection to simulate a natural human speaker.
+
+---
+
 ## 1. PROJECT INTRODUCTION (Elevator Pitch)
 
 > *"Tell me about a project you built on AWS."*

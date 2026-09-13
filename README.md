@@ -24,11 +24,15 @@ Built by **Aamir** | [LinkedIn](https://www.linkedin.com/in/aamir-imran)
 
 ## 📌 Project Overview
 
-**NovaMind AI Text-to-Speech Converter** is a cloud-native, serverless application that transforms written text into spoken audio using **Amazon Polly**. Users submit text through a web interface, select a voice, and receive a playable MP3 audio file — all processed asynchronously in the cloud with zero server management.
+**NovaMind AI** is a production-ready, production-grade Serverless Generative AI Text-to-Speech (TTS) Web Application. It leverages Amazon Web Services (AWS) managed services to convert user-submitted text into highly natural, human-like audio files in real time.
+
+Because the backend is entirely serverless, it requires zero server management, automatically scales from zero to millions of requests, and charges strictly on a pay-per-use basis.
 
 ---
 
 ## 🏗️ Architecture
+
+![NovaMind AI Architecture](project-pic/architecture.jpg)
 
 ```
 Browser (S3 Static Website)
@@ -62,17 +66,63 @@ Lambda: ConvertToAudio
 
 ---
 
+## 🛠️ Core Technology Stack
+
+| Layer | Technology |
+|---|---|
+| **Frontend** | HTML5, CSS3, JavaScript — hosted as static site on Amazon S3 |
+| **API Management** | Amazon API Gateway — HTTP REST API with CORS enabled |
+| **Compute** | AWS Lambda — serverless microservice business logic |
+| **Database** | Amazon DynamoDB — NoSQL key-value store for state tracking |
+| **Event Orchestration** | Amazon SNS — decoupled asynchronous execution flow |
+| **Generative AI Engine** | Amazon Polly — neural text-to-speech synthesis |
+| **Storage** | Amazon S3 — stores final generated `.mp3` audio outputs |
+| **Security & Monitoring** | AWS IAM (fine-grained roles) + Amazon CloudWatch (logging & metrics) |
+
+---
+
+## 🔄 Step-by-Step Architecture Flow
+
+The system operates using two distinct paths: the **Write Path** (Audio Creation) and the **Read Path** (Audio Retrieval).
+
+### 1. The Frontend Dashboard
+A user visits the NovaMind AI website, enters custom text, picks a neural voice profile (language, accent, gender), and hits **"Generate Audio"**.
+
+### 2. The Create Audio Path — Asynchronous Write Pipeline
+
+1. **API Submission** — Browser sends a `POST /` request with the text payload to PostReaderAPI (API Gateway)
+2. **Request Intake (PostReader_NewPost)** — Lambda generates a UUID, initializes status as `PROCESSING`, saves metadata to DynamoDB `posts` table
+3. **Event Broadcast** — Lambda publishes the new post event to an SNS Topic, decoupling the client response from heavy audio compilation and immediately freeing the API for new traffic
+4. **Audio Synthesis (ConvertToAudio)** — SNS triggers a second worker Lambda which reads the text, breaks it into chunks if long, passes it to Amazon Polly, receives MP3 streams, assembles them, and uploads to S3 Audio Bucket
+5. **State Update** — DynamoDB record updated: status → `UPDATED`, url → public S3 object URL
+
+### 3. The Retrieve Audio Path — Synchronous Read Pipeline
+
+1. Client fires a `GET /?postId=` request to API Gateway
+2. `PostReader_GetPost` Lambda checks the status in DynamoDB
+3. If `PROCESSING` → UI shows a loader. Once `UPDATED` → returns the MP3 URL
+4. Browser's native media player streams the audio file directly from S3
+
+---
+
+## 🧠 Why This Qualifies as Generative AI
+
+Instead of relying on pre-recorded audio files or robotic phoneme splicing, **Amazon Polly** uses deep learning models to synthesize human-like speech. It dynamically generates entirely new audio content from raw text, adjusting for contextual nuances, punctuation pacing, accents, and inflection to simulate a natural human speaker.
+
+---
+
 ## ☁️ AWS Services Used
 
 | Service | Purpose |
 |---|---|
-| **Amazon Polly** | Converts text to MP3 speech |
-| **AWS Lambda** | Serverless compute (3 functions) |
-| **Amazon DynamoDB** | Stores post metadata and audio URLs |
-| **Amazon SNS** | Async trigger between Lambda functions |
-| **Amazon S3** | Stores MP3 files + hosts the web frontend |
-| **API Gateway** | REST API exposing POST and GET endpoints |
-| **IAM** | Role-based permissions for Lambda |
+| **Amazon Polly** | Generative AI — neural text-to-speech synthesis |
+| **AWS Lambda** | Serverless compute (3 microservice functions) |
+| **Amazon DynamoDB** | NoSQL state tracking — post metadata and audio URLs |
+| **Amazon SNS** | Async event orchestration between Lambda functions |
+| **Amazon S3** | Audio file storage + static frontend hosting |
+| **API Gateway** | REST API — POST (create) and GET (retrieve) endpoints |
+| **AWS IAM** | Fine-grained execution roles, least-privilege security |
+| **Amazon CloudWatch** | Logging, error tracking, and Lambda metrics |
 
 ---
 
@@ -162,6 +212,7 @@ PollyGenAI/
 ├── PostReader_NewPost/
 │   └── PostReader_NewPost.py                        # Lambda 1: Create post
 ├── project-pic/                                     # Screenshots
+│   ├── architecture.jpg                             # Full architecture diagram
 │   ├── NovaMind Ai Text to Speech Dashboard1.png
 │   ├── NovaMind Ai Text to Speech Dashboard2.png
 │   ├── NovaMind Ai Text to Speech Dashboard3.png
