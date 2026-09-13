@@ -143,6 +143,10 @@ Instead of relying on pre-recorded audio files or robotic phoneme splicing, **Am
 ### Frontend S3 Bucket
 ![AWS Frontend S3 Bucket](project-pic/aws-fronted-s3-bucket.png)
 
+### Output S3 Bucket
+![AWS Output S3 Bucket](project-pic/aws-output-s3-bucket.png)
+
+
 ---
 
 ## ⚙️ Lambda Functions
